@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/firebase_options.dart';
 import 'package:flutter_application_1/views/login_view.dart';
+import 'package:flutter_application_1/views/notes_view.dart';
 import 'package:flutter_application_1/views/register_view.dart';
 import 'package:flutter_application_1/views/verify_email_view.dart';
 
@@ -14,8 +15,13 @@ void main() {
   runApp(MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-       primarySwatch: Colors.blue,
-      ),
+    primarySwatch: Colors.blue,
+    appBarTheme: const AppBarTheme(
+        iconTheme: IconThemeData(color: Colors.black),
+        color: Colors.deepPurpleAccent,
+         //<-- SEE HERE
+),
+  ),
       home: const HomePage(),
       routes: {
         '/login/': (context)=> const LoginView(),
@@ -34,31 +40,22 @@ class HomePage extends StatelessWidget {
         future: Firebase.initializeApp(
            options: DefaultFirebaseOptions.currentPlatform,
          ),
-        builder: (context, snapshot) {
+        builder: (context, snapshot)  {
           switch (snapshot.connectionState){
                case ConnectionState.done:
-                final user= FirebaseAuth.instance.currentUser;
-               if(user!=null){
-                 if(user.emailVerified){
-                    print('Email is Verified. Continue to the site.');
-                 }
-                 else{
+                  final user=  FirebaseAuth.instance.currentUser;
+                  if(user!=null){
+                      if(user.emailVerified){
+                       return const NotesView();
+                      }
+                      else{
                       return const VerifyEmailView();
-                 }
-               }
-               else{
+                      }
+                  }
+                  else{
                      return const LoginView();
-               }
-                
-                //  final emailVerified=user?.emailVerified ?? false;
-                //  if(emailVerified){
-                //   return const Text('Done');
-                //  }
-                //  else{
+                  }
                   
-                //   return const VerifyEmailView();
-                //  }
-                  return const Text('Done');
               default:
                  return const CircularProgressIndicator();
 

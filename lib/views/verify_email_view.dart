@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
 
@@ -20,10 +21,12 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             TextButton(onPressed: () async{
                  final user =FirebaseAuth.instance.currentUser;
                  await user?.sendEmailVerification();
+                 
             },
              child: const Text('Send Email Verification'))
           ],
           ),
+           
     );
   }
 }

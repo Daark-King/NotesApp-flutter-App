@@ -1,10 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
 import 'package:flutter_application_1/constants/routes.dart';
-// import 'package:flutter_application_1/firebase_options.dart';
+import 'package:flutter_application_1/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -61,10 +58,11 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
-                if (userCredential.user?.emailVerified ?? false) {
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: email, password: password);
+                final user = await FirebaseAuth.instance.currentUser;
+                //myadd
+                if (user?.emailVerified ?? false) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
@@ -74,12 +72,8 @@ class _LoginViewState extends State<LoginView> {
                       verifyEmailRoute, (route) => false);
                 }
               } on FirebaseAuthException catch (e) {
-                if (e.code == 'invalid-credential') {
-                  devtools.log(e.code.toString());
-                } else {
-                  devtools.log('Something else happend');
-                  devtools.log(e.code.toString());
-                }
+                await showErrorDialog(
+                    context, e.code.toString(), 'An Error Occurred!!');
               }
             },
             child: const Text('Login'),

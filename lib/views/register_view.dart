@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-
 import 'package:flutter_application_1/constants/routes.dart';
-// import 'package:flutter_application_1/firebase_options.dart';
+import 'package:flutter_application_1/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -63,15 +61,22 @@ class _RegisterViewState extends State<RegisterView> {
               try {
                 await FirebaseAuth.instance.createUserWithEmailAndPassword(
                     email: email, password: password);
+                //myadd
                 Navigator.of(context).pushNamedAndRemoveUntil(
                     verifyEmailRoute, (route) => false);
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  devtools.log(e.code.toString());
+                  await showErrorDialog(
+                      context, e.code.toString(), "An Error Occurred!!");
                 } else if (e.code == 'email-already-in-use') {
-                  devtools.log(e.code.toString());
+                  await showErrorDialog(
+                      context, e.code.toString(), "An Error Occurred!!");
                 } else if (e.code == 'invalid-email') {
-                  devtools.log(e.code.toString());
+                  await showErrorDialog(
+                      context, e.code.toString(), "An Error Occurred!!");
+                } else {
+                  await showErrorDialog(
+                      context, e.code.toString(), "An Error Occurred!!");
                 }
               }
             },

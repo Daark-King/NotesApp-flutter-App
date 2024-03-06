@@ -60,8 +60,7 @@ class _LoginViewState extends State<LoginView> {
               try {
                 await FirebaseAuth.instance.signInWithEmailAndPassword(
                     email: email, password: password);
-                final user = await FirebaseAuth.instance.currentUser;
-                //myadd
+                final user = FirebaseAuth.instance.currentUser;
                 if (user?.emailVerified ?? false) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
@@ -74,6 +73,9 @@ class _LoginViewState extends State<LoginView> {
               } on FirebaseAuthException catch (e) {
                 await showErrorDialog(
                     context, e.code.toString(), 'An Error Occurred!!');
+              } catch (e) {
+                await showErrorDialog(
+                    context, e.toString(), 'An Error Occurred!!');
               }
             },
             child: const Text('Login'),

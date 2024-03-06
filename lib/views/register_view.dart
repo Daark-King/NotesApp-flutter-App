@@ -1,6 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
+// hynerd
 import 'package:flutter_application_1/constants/routes.dart';
 import 'package:flutter_application_1/utilities/show_error_dialog.dart';
 
@@ -62,22 +64,17 @@ class _RegisterViewState extends State<RegisterView> {
                 await FirebaseAuth.instance.createUserWithEmailAndPassword(
                     email: email, password: password);
                 //myadd
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    verifyEmailRoute, (route) => false);
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                Navigator.of(context).pushNamed(
+                  verifyEmailRoute,
+                );
               } on FirebaseAuthException catch (e) {
-                if (e.code == 'weak-password') {
-                  await showErrorDialog(
-                      context, e.code.toString(), "An Error Occurred!!");
-                } else if (e.code == 'email-already-in-use') {
-                  await showErrorDialog(
-                      context, e.code.toString(), "An Error Occurred!!");
-                } else if (e.code == 'invalid-email') {
-                  await showErrorDialog(
-                      context, e.code.toString(), "An Error Occurred!!");
-                } else {
-                  await showErrorDialog(
-                      context, e.code.toString(), "An Error Occurred!!");
-                }
+                await showErrorDialog(context, e.code.toString(),
+                    "An Authentication Error Occurred!!");
+              } catch (e) {
+                await showErrorDialog(
+                    context, e.toString(), "An Error Occurred!!");
               }
             },
             child: const Text('Register'),

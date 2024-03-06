@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/routes.dart';
+import 'package:flutter_application_1/services/auth/auth_exception.dart';
+import 'package:flutter_application_1/services/auth/auth_service.dart';
 import 'package:flutter_application_1/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -58,10 +59,9 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email, password: password);
-                final user = FirebaseAuth.instance.currentUser;
-                if (user?.emailVerified ?? false) {
+                AuthService.firebase().logIn(email: email, password: password);
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
@@ -70,12 +70,12 @@ class _LoginViewState extends State<LoginView> {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                       verifyEmailRoute, (route) => false);
                 }
-              } on FirebaseAuthException catch (e) {
+              } on InvalidCredentialAuthException catch (_) {
+                await showErrorDialog(context, 'Invalid Login Credentials',
+                    'An Error Occurred!!');
+              } on GenericException catch (_) {
                 await showErrorDialog(
-                    context, e.code.toString(), 'An Error Occurred!!');
-              } catch (e) {
-                await showErrorDialog(
-                    context, e.toString(), 'An Error Occurred!!');
+                    context, 'Authentication Error!!', 'An Error Occurred!!');
               }
             },
             child: const Text('Login'),

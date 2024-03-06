@@ -1,9 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// hynerd
 import 'package:flutter_application_1/constants/routes.dart';
+import 'package:flutter_application_1/services/auth/auth_exception.dart';
+import 'package:flutter_application_1/services/auth/auth_service.dart';
 import 'package:flutter_application_1/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -61,20 +59,25 @@ class _RegisterViewState extends State<RegisterView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                    email: email, password: password);
+                AuthService.firebase()
+                    .createUser(email: email, password: password);
                 //myadd
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
+                AuthService.firebase().sendEmailVerification();
                 Navigator.of(context).pushNamed(
                   verifyEmailRoute,
                 );
-              } on FirebaseAuthException catch (e) {
-                await showErrorDialog(context, e.code.toString(),
+              } on WeakPasswordAuthException catch (_) {
+                await showErrorDialog(context, 'Weak Password.',
                     "An Authentication Error Occurred!!");
-              } catch (e) {
+              } on InvalidEmailAuthException catch (_) {
                 await showErrorDialog(
-                    context, e.toString(), "An Error Occurred!!");
+                    context, 'Invalid Email Address.', "An Error Occurred!!");
+              } on EmailAlreadyInUseAuthException catch (_) {
+                await showErrorDialog(
+                    context, 'Email Already In Use.', "An Error Occurred!!");
+              } on GenericException catch (_) {
+                await showErrorDialog(
+                    context, 'Network Error!!', "An Error Occurred!!");
               }
             },
             child: const Text('Register'),

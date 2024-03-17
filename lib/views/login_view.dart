@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/routes.dart';
 import 'package:flutter_application_1/services/auth/auth_exception.dart';
 import 'package:flutter_application_1/services/auth/auth_service.dart';
-import 'package:flutter_application_1/utilities/show_error_dialog.dart';
+import 'package:flutter_application_1/utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -71,11 +71,15 @@ class _LoginViewState extends State<LoginView> {
                       verifyEmailRoute, (route) => false);
                 }
               } on InvalidCredentialAuthException catch (_) {
-                await showErrorDialog(context, 'Invalid Login Credentials',
-                    'An Error Occurred!!');
+                await showErrorDialog(
+                  context,
+                  'Invalid Login Credentials',
+                );
               } on GenericException catch (_) {
                 await showErrorDialog(
-                    context, 'Authentication Error!!', 'An Error Occurred!!');
+                  context,
+                  'Authentication Error!!',
+                );
               }
             },
             child: const Text('Login'),

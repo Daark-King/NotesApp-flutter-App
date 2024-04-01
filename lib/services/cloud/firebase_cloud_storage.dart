@@ -6,6 +6,23 @@ import 'package:flutter_application_1/services/cloud/cloud_storage_exceptions.da
 class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes');
 
+  Future<void> deleteNote({required String documentId}) async {
+    try {
+      await notes.doc(documentId).delete();
+    } catch (e) {
+      throw CouldNoteDeleteNoteException();
+    }
+  }
+
+  Future<void> updateNote(
+      {required String documentId, required String text}) async {
+    try {
+      await notes.doc(documentId).update({textFieldName: text});
+    } catch (e) {
+      throw CouldNoteUpdateNoteException();
+    }
+  }
+
   Stream<Iterable<CloudNote>> allNotes({required String ownerUserId}) {
     return notes.snapshots().map((event) => event.docs
         .map((doc) => CloudNote.fromSnapshot(doc))
@@ -17,22 +34,22 @@ class FirebaseCloudStorage {
       return await notes
           .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
           .get()
-          .then((value) => value.docs.map((doc) {
-                return CloudNote(
-                    documentId: doc.id,
-                    ownerUserId: doc.data()[ownerUserIdFieldName],
-                    text: doc.data()[textFieldName] as String);
-              }));
+          .then(
+            (value) => value.docs.map((doc) => CloudNote.fromSnapshot(doc)),
+          );
     } catch (e) {
       throw CouldNoteGetAllNotesException();
     }
   }
 
-  void createNewNote({required ownerUserId}) async {
-    await notes.add({
+  Future<CloudNote> createNewNote({required ownerUserId}) async {
+    final document = await notes.add({
       ownerUserIdFieldName: ownerUserId,
       textFieldName: '',
     });
+    final fetchedNote = await document.get();
+    return CloudNote(
+        documentId: fetchedNote.id, ownerUserId: ownerUserId, text: '');
   }
 
   static final FirebaseCloudStorage _shared =

@@ -47,12 +47,11 @@ class _NotesViewState extends State<NotesView> {
                 case MenuAction.logout:
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
+                    // ignore: use_build_context_synchronously
                     context.read<AuthBloc>().add(
                           const AuthEventLogOut(),
                         );
                     // ignore: use_build_context_synchronously
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                   }
               }
             },

@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+// import 'package:flutter/material.dart';
 import 'package:flutter_application_1/firebase_options.dart';
 import 'package:flutter_application_1/services/auth/auth_exception.dart';
 import 'package:flutter_application_1/services/auth/auth_provider.dart';
@@ -64,7 +65,9 @@ class FirebaseAuthProvider implements AuthProvider {
         throw UserNotLogedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'invalid-credentials') {
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
         throw InvalidCredentialAuthException();
       } else {
         throw GenericException();

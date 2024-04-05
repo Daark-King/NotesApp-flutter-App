@@ -9,3 +9,5 @@ class EmailAlreadyInUseAuthException implements Exception {}
 class UserNotLogedInAuthException implements Exception {}
 
 class GenericException implements Exception {}
+
+class UserNotFoundAuthException implements Exception {}

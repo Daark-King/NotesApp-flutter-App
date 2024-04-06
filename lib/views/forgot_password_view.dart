@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/extensions/buildcontext/loc.dart';
 import 'package:flutter_application_1/services/auth/bloc/auth_bloc.dart';
 import 'package:flutter_application_1/services/auth/bloc/auth_event.dart';
 import 'package:flutter_application_1/services/auth/bloc/auth_state.dart';
@@ -39,29 +40,31 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           }
           if (state.exception != null) {
             // ignore: use_build_context_synchronously
-            await showErrorDialog(context,
-                'We were unable to send the password reset email. Please make sure that you are a registered user.');
+            await showErrorDialog(
+                // ignore: use_build_context_synchronously
+                context,
+                // ignore: use_build_context_synchronously
+                context.loc.forgot_password_view_generic_error);
           }
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Forgot Password'),
+          title: Text(context.loc.forgot_password),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Text(
-                    "Please enter your email address to reset your password."),
+                Text(context.loc.forgot_password_view_prompt),
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
                   autofocus: true,
                   controller: _controller,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email address',
+                  decoration: InputDecoration(
+                    hintText: context.loc.email_text_field_placeholder,
                   ),
                 ),
                 TextButton(
@@ -73,13 +76,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           ),
                         );
                   },
-                  child: const Text('Reset Password'),
+                  child: Text(context.loc.forgot_password_view_send_me_link),
                 ),
                 TextButton(
                   onPressed: () {
                     context.read<AuthBloc>().add(const AuthEventLogOut());
                   },
-                  child: const Text('Login'),
+                  child: Text(context.loc.forgot_password_view_back_to_login),
                 ),
               ],
             ),

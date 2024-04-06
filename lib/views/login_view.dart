@@ -1,6 +1,7 @@
 // import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/extensions/buildcontext/loc.dart';
 // import 'package:flutter_application_1/constants/routes.dart';
 import 'package:flutter_application_1/services/auth/auth_exception.dart';
 // import 'package:flutter_application_1/services/auth/auth_service.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_application_1/services/auth/bloc/auth_state.dart';
 import 'package:flutter_application_1/utilities/dialogs/error_dialog.dart';
 // import 'package:flutter_application_1/utilities/dialogs/loading_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -44,19 +46,19 @@ class _LoginViewState extends State<LoginView> {
           if (state.exception is InvalidCredentialAuthException) {
             await showErrorDialog(
               context,
-              'Invalid Login Credentials',
+              context.loc.login_error_invalid_credentials,
             );
           } else if (state.exception is GenericException) {
             await showErrorDialog(
               context,
-              'An Error Occured',
+              context.loc.generic_error_prompt,
             );
           }
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Login'),
+          title: Text(context.loc.login),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -68,8 +70,8 @@ class _LoginViewState extends State<LoginView> {
                   enableSuggestions: false,
                   autocorrect: false,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email id',
+                  decoration: InputDecoration(
+                    hintText: context.loc.email_text_field_placeholder,
                   ),
                 ),
                 TextField(
@@ -77,8 +79,8 @@ class _LoginViewState extends State<LoginView> {
                   obscureText: true,
                   enableSuggestions: false,
                   autocorrect: false,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your password',
+                  decoration: InputDecoration(
+                    hintText: context.loc.password_text_field_placeholder,
                   ),
                 ),
                 TextButton(
@@ -89,7 +91,7 @@ class _LoginViewState extends State<LoginView> {
                           AuthEventLogIn(email, password),
                         );
                   },
-                  child: const Text('Login'),
+                  child: Text(context.loc.login),
                 ),
                 TextButton(
                   onPressed: () {
@@ -97,7 +99,7 @@ class _LoginViewState extends State<LoginView> {
                           const AuthEventShouldRegister(),
                         );
                   },
-                  child: const Text('Not Registered Yet? Register Here!'),
+                  child: Text(context.loc.login_view_not_registered_yet),
                 ),
                 TextButton(
                   onPressed: () {
@@ -105,7 +107,7 @@ class _LoginViewState extends State<LoginView> {
                           const AuthEventForgotPassword(),
                         );
                   },
-                  child: const Text('Forgot Password'),
+                  child: Text(context.loc.login_view_forgot_password),
                 ),
               ],
             ),

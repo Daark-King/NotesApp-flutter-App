@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/extensions/buildcontext/loc.dart';
 import 'package:flutter_application_1/utilities/dialogs/generic_dialog.dart';
 
 Future<bool> showLogOutDialog(
@@ -6,11 +7,11 @@ Future<bool> showLogOutDialog(
 ) {
   return showGenericDialog(
     context: context,
-    title: 'Log Out',
-    content: 'Are You Sure You Want to Log Out?',
+    title: context.loc.logout_button,
+    content: context.loc.logout_dialog_prompt,
     optionsBuilder: () => {
-      'Cancel': false,
-      'LogOut': true,
+      context.loc.cancel: false,
+      context.loc.logout_button: true,
     },
   ).then((value) => value ?? false);
 }
